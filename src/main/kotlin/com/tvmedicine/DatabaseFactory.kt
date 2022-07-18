@@ -1,15 +1,21 @@
 package com.tvmedicine
 
-import com.tvmedicine.models.*
-import kotlinx.coroutines.*
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.*
-import org.jetbrains.exposed.sql.transactions.experimental.*
-import java.sql.DriverManager
 
 object DatabaseFactory {
+    var db: Database? = null
     fun init() {
-        val driverClassName = "org.postgresql.Driver"
-
+        val ds = HikariDataSource(HikariConfig().apply {
+            jdbcUrl = "jdbc:postgresql://localhost:5432/TVMedicine"
+            username = "postgres"
+            password = "1234"
+            driverClassName = "org.postgresql.Driver"
+        })
+         db = Database.connect(ds)
+    }
+    fun getDBConnection(): Database?{
+        return db
     }
 }
