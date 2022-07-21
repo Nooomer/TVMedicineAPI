@@ -8,10 +8,13 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.MissingFieldException
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
+@OptIn(ExperimentalSerializationApi::class)
 fun Route.patientRouting() {
     //val jdbcURL = "jdbc:postgresql://localhost:5432/TVMedicine"
     //val connections = DriverManager
@@ -79,18 +82,24 @@ fun Route.patientRouting() {
             call.respond(patient)*/
         }
         post(/*"{surename?}"*/) {
+            try {
                 val patient = call.receive<Patientss>()
+                transaction {
+                    addLogger(StdOutSqlLogger)
+                    SchemaUtils.create(patients)
+                    patients.insert{ it[surename]= patient.Surename}
+                }
+
+                call.respondText("Customer stored correctly", status = HttpStatusCode.Created)
+            }
+            catch (e: MissingFieldException)
+            {
+                call.respondText("Need more parameters", status = HttpStatusCode.BadRequest)
+            }
             /*val surename = patient.Surename
             val query = connections.prepareStatement("INSERT INTO public.\"Patient\" (\"Surename\") VALUES ('$surename')")
             query.execute()
             call.respondText("Customer stored correctly", status = HttpStatusCode.Created)*/
-            transaction {
-                addLogger(StdOutSqlLogger)
-                SchemaUtils.create(patients)
-                patients.insert{ it[surename]= patient.Surename}
-            }
-
-            call.respondText("Customer stored correctly", status = HttpStatusCode.Created)
 
 
         }
