@@ -1,7 +1,6 @@
 package com.tvmedicine.routes
 
-import com.tvmedicine.DatabaseFactory.getDBConnection
-import com.tvmedicine.models.Patientss
+import com.tvmedicine.models.PatientSModel
 import com.tvmedicine.models.patients
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -16,19 +15,19 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 @OptIn(ExperimentalSerializationApi::class)
 fun Route.patientRouting() {
-    val patientssStorage = mutableListOf<Patientss>()
+    val patientSModelStorage = mutableListOf<PatientSModel>()
     route("/patient") {
         get {
             transaction {
                 addLogger(StdOutSqlLogger)
                 SchemaUtils.create(patients)
                 for (patient in patients.selectAll()) {
-                    patientssStorage.add(Patientss(patient[patients.id], patient[patients.surename]))
+                    patientSModelStorage.add(PatientSModel(patient[patients.id], patient[patients.surename]))
                 }
             }
-                if (patientssStorage.isNotEmpty()) {
-                    call.respond(patientssStorage)
-                    patientssStorage.clear()
+                if (patientSModelStorage.isNotEmpty()) {
+                    call.respond(patientSModelStorage)
+                    patientSModelStorage.clear()
                 } else {
                     call.respondText("No patient found", status = HttpStatusCode.NotFound)
                 }
@@ -41,19 +40,19 @@ fun Route.patientRouting() {
             transaction {
                 addLogger(StdOutSqlLogger)
                 for (patient in patients.select(patients.id eq  id.toInt())) {
-                    patientssStorage.add(Patientss(patient[patients.id], patient[patients.surename]))
+                    patientSModelStorage.add(PatientSModel(patient[patients.id], patient[patients.surename]))
                 }
             }
-            if (patientssStorage.isNotEmpty()) {
-                call.respond(patientssStorage)
-                patientssStorage.clear()
+            if (patientSModelStorage.isNotEmpty()) {
+                call.respond(patientSModelStorage)
+                patientSModelStorage.clear()
             } else {
                 call.respondText("No patient found", status = HttpStatusCode.NotFound)
             }
         }
         post() {
             try {
-                val patient = call.receive<Patientss>()
+                val patient = call.receive<PatientSModel>()
                 transaction {
                     addLogger(StdOutSqlLogger)
                     SchemaUtils.create(patients)
