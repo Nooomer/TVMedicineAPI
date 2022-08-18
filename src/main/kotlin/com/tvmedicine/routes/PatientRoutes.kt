@@ -1,6 +1,7 @@
 package com.tvmedicine.routes
 
 import com.tvmedicine.models.PatientSModel
+import com.tvmedicine.models.Responds
 import com.tvmedicine.models.patients
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -16,13 +17,21 @@ import org.jetbrains.exposed.sql.transactions.transaction
 @OptIn(ExperimentalSerializationApi::class)
 fun Route.patientRouting() {
     val patientSModelStorage = mutableListOf<PatientSModel>()
+    val responds = Responds()
     route("/patient") {
         get {
             transaction {
                 addLogger(StdOutSqlLogger)
                 SchemaUtils.create(patients)
                 for (patient in patients.selectAll()) {
-                    patientSModelStorage.add(PatientSModel(patient[patients.id], patient[patients.surename]))
+                    patientSModelStorage.add(PatientSModel(
+                        patient[patients.id],
+                        patient[patients.surename],
+                        patient[patients.name],
+                        patient[patients.s_name],
+                        patient[patients.phone_number],
+                        patient[patients.insurance_policy_number],
+                        patient[patients.password]))
                 }
             }
                 if (patientSModelStorage.isNotEmpty()) {
@@ -40,7 +49,14 @@ fun Route.patientRouting() {
             transaction {
                 addLogger(StdOutSqlLogger)
                 for (patient in patients.select(patients.id eq  id.toInt())) {
-                    patientSModelStorage.add(PatientSModel(patient[patients.id], patient[patients.surename]))
+                    patientSModelStorage.add(PatientSModel(
+                        patient[patients.id],
+                        patient[patients.surename],
+                        patient[patients.name],
+                        patient[patients.s_name],
+                        patient[patients.phone_number],
+                        patient[patients.insurance_policy_number],
+                        patient[patients.password]))
                 }
             }
             if (patientSModelStorage.isNotEmpty()) {
@@ -56,14 +72,22 @@ fun Route.patientRouting() {
                 transaction {
                     addLogger(StdOutSqlLogger)
                     SchemaUtils.create(patients)
-                    patients.insert{ it[surename]= patient.Surename}
+                    patients.insert{
+                        it[surename]= patient.Surename
+                        it[name]= patient.name
+                        it[s_name]= patient.s_name
+                        it[phone_number]= patient.phone_number
+                        it[insurance_policy_number]= patient.insurance_policy_number
+                        it[password]= patient.password
+                    }
                 }
-
-                call.respondText("Customer stored correctly", status = HttpStatusCode.Created)
+                responds.Created("Patient",call)
+                //call.respondText("Customer stored correctly", status = HttpStatusCode.Created)
             }
             catch (e: MissingFieldException)
             {
-                call.respondText("Need more parameters", status = HttpStatusCode.BadRequest)
+                responds.NeedsParams("${e.missingFields}", call)
+                //call.respondText("Need more parameters", status = HttpStatusCode.BadRequest)
             }
         }
         delete("{id?}") {
