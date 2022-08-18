@@ -1,11 +1,7 @@
 package com.tvmedicine.routes
 
-import com.tvmedicine.models.PatientSModel
-import com.tvmedicine.models.patients
-import com.tvmedicine.models.treatment
-import io.ktor.http.*
+import com.tvmedicine.models.*
 import io.ktor.server.application.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -13,22 +9,34 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 @OptIn(ExperimentalSerializationApi::class)
-fun Route.TreatmentRouting() {
-    val treatmentStorage = mutableListOf<PatientSModel>()
+fun Route.treatmentRouting() {
+    val treatmentStorage = mutableListOf<TreatmentSModel>()
+    val er = Responds()
     route("/treatment") {
         get {
             transaction {
                 addLogger(StdOutSqlLogger)
                 SchemaUtils.create(treatment)
-                for (doctor in treatment.selectAll()) {
-                    treatmentStorage.add(PatientSModel(patient[patients.id], patient[patients.surename]))
+                for (treatments in treatment.selectAll()) {
+                    treatmentStorage.add(TreatmentSModel(
+                        treatments[treatment.id],
+                        treatments[treatment.chat_id],
+                        treatments[treatment.patient_id],
+                        treatments[treatment.doctor_id],
+                        treatments[treatment.start_date],
+                        treatments[treatment.symptoms_id],
+                        treatments[treatment.sound_server_link_id],
+                        treatments[treatment.conclusion_id]
+                        ))
                 }
             }
             if (treatmentStorage.isNotEmpty()) {
                 call.respond(treatmentStorage)
                 treatmentStorage.clear()
             } else {
-                call.respondText("No patient found", status = HttpStatusCode.NotFound)
+                er.NotFoundError("treatment", call)
+                //call.respondText("No patient found", status = HttpStatusCode.NotFound)
+
             }
         }
         get("{id?}") {
