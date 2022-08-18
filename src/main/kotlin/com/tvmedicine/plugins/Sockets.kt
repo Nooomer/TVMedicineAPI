@@ -17,7 +17,7 @@ fun Application.configureSockets() {
     }
 
     routing {
-        webSocket("/") { // websocketSession
+        webSocket("/chat") { // websocketSession
             for (frame in incoming) {
                 when (frame) {
                     is Frame.Text -> {
