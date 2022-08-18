@@ -1,6 +1,6 @@
 package com.tvmedicine.plugins
 
-import com.tvmedicine.routes.patientRouting
+import com.tvmedicine.routes.*
 import io.ktor.server.routing.*
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -14,5 +14,6 @@ fun Application.configureRouting() {
             call.respondText("Hello World!")
         }
         patientRouting()
+        treatmentRouting()
     }
 }
