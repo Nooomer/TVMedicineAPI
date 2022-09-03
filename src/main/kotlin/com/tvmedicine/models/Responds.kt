@@ -6,16 +6,15 @@ import io.ktor.server.response.*
 
 class Responds {
 
-    suspend fun NotFoundError(name: String, call: ApplicationCall)
-    {
+    suspend fun NotFoundError(name: String, call: ApplicationCall) {
         call.respondText("No $name found", status = HttpStatusCode.NotFound)
     }
-    suspend fun Created(name: String, call: ApplicationCall)
-    {
+
+    suspend fun Created(name: String, call: ApplicationCall) {
         call.respondText("$name stored correctly", status = HttpStatusCode.Created)
     }
-    suspend fun NeedsParams(params: String, call: ApplicationCall)
-    {
+
+    suspend fun NeedsParams(params: String, call: ApplicationCall) {
         call.respondText("Need more parameters: $params", status = HttpStatusCode.BadRequest)
     }
 }

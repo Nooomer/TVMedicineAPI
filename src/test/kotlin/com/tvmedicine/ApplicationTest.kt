@@ -7,7 +7,7 @@ import io.ktor.util.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.websocket.*
-import io.ktor.websocket.*
+import io.ktor.server.websocket.*
 import java.time.Duration
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -17,6 +17,7 @@ import io.ktor.client.statement.*
 import kotlin.test.*
 import io.ktor.server.testing.*
 import com.tvmedicine.plugins.*
+import io.ktor.client.call.body
 
 class ApplicationTest {
     @Test

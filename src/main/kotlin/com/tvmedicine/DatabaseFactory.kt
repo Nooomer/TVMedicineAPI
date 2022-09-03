@@ -15,9 +15,10 @@ object DatabaseFactory {
             password = getenv("dbPasswords")
             driverClassName = getenv("driver")
         })
-         db = Database.connect(ds)
+        db = Database.connect(ds)
     }
-    fun getDBConnection(): Database?{
+
+    fun getDBConnection(): Database? {
         return db
     }
 }

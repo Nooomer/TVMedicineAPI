@@ -18,16 +18,18 @@ fun Route.treatmentRouting() {
                 addLogger(StdOutSqlLogger)
                 SchemaUtils.create(treatment)
                 for (treatments in treatment.selectAll()) {
-                    treatmentStorage.add(TreatmentSModel(
-                        treatments[treatment.id],
-                        treatments[treatment.chat_id],
-                        treatments[treatment.patient_id],
-                        treatments[treatment.doctor_id],
-                        treatments[treatment.start_date],
-                        treatments[treatment.symptoms_id],
-                        treatments[treatment.sound_server_link_id],
-                        treatments[treatment.conclusion_id]
-                        ))
+                    treatmentStorage.add(
+                        TreatmentSModel(
+                            treatments[treatment.id],
+                            treatments[treatment.chat_id],
+                            treatments[treatment.patient_id],
+                            treatments[treatment.doctor_id],
+                            treatments[treatment.start_date],
+                            treatments[treatment.symptoms_id],
+                            treatments[treatment.sound_server_link_id],
+                            treatments[treatment.conclusion_id]
+                        )
+                    )
                 }
             }
             if (treatmentStorage.isNotEmpty()) {
