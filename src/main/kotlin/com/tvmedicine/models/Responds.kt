@@ -4,8 +4,8 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 
-class Responds {
-
+interface Responds {
+companion object {
     suspend fun NotFoundError(name: String, call: ApplicationCall) {
         call.respondText("No $name found", status = HttpStatusCode.NotFound)
     }
@@ -17,4 +17,5 @@ class Responds {
     suspend fun NeedsParams(params: String, call: ApplicationCall) {
         call.respondText("Need more parameters: $params", status = HttpStatusCode.BadRequest)
     }
+}
 }

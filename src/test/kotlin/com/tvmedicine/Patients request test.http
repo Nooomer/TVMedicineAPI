@@ -8,7 +8,7 @@ client.test("Request executed successfully", function() {
 
 ###
 
-GET http://localhost:8080/patient/1
+GET http://localhost:8080/patient/4
 
 > {%
 client.test("Request executed successfully", function() {

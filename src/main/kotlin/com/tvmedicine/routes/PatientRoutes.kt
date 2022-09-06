@@ -18,7 +18,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 @OptIn(ExperimentalSerializationApi::class)
 fun Route.patientRouting() {
     var patientSModelStorage = mutableListOf<PatientSModel>()
-    val responds = Responds()
 
     route("/patient") {
         get {
@@ -73,10 +72,10 @@ fun Route.patientRouting() {
                         it[password] = patient.password
                     }
                 }
-                responds.Created("Patient", call)
+                Responds.Created("Patient", call)
                 //call.respondText("Customer stored correctly", status = HttpStatusCode.Created)
             } catch (e: MissingFieldException) {
-                responds.NeedsParams("${e.missingFields}", call)
+                Responds.NeedsParams("${e.missingFields}", call)
                 //call.respondText("Need more parameters", status = HttpStatusCode.BadRequest)
             }
         }
