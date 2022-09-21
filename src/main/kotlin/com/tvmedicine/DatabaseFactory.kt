@@ -2,8 +2,7 @@ package com.tvmedicine
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.server.application.*
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Database
 import java.lang.System.getenv
 
 object DatabaseFactory {
@@ -14,11 +13,9 @@ object DatabaseFactory {
             username = getenv("dbUsername")
             password = getenv("dbPasswords")
             driverClassName = getenv("driver")
+            minimumIdle = 3
+            maximumPoolSize = 5
         })
         db = Database.connect(ds)
-    }
-
-    fun getDBConnection(): Database? {
-        return db
     }
 }
