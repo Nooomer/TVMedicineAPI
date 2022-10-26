@@ -45,6 +45,16 @@ interface dbUtils {
             }
             return patientSModelStorage
         }
+        fun getPatientByLogin(login: String): MutableList<PatientSModel> {
+            transaction {
+                addLogger(StdOutSqlLogger)
+                SchemaUtils.create(patients)
+                for (patient in patients.select(patients.phone_number eq login)) {
+                    addToStorage("patientSModelStorage", patient)
+                }
+            }
+            return patientSModelStorage
+        }
 
         fun getAllTreatment(): MutableList<TreatmentSModel> {
             transaction {
