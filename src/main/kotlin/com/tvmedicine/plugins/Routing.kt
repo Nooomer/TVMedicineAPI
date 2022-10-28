@@ -33,7 +33,7 @@ fun Application.configureRouting() {
                         .withAudience("http://127.0.0.1:8080/")
                         .withIssuer("http://127.0.0.1:8080/")
                         .withClaim("login", user.login)
-                        .withExpiresAt(Date(System.currentTimeMillis() + 60000))
+                        .withExpiresAt(Date(System.currentTimeMillis() + 6000000000))
                         .sign(Algorithm.HMAC256("secret"))
                     call.respond(hashMapOf("token" to token))
                 }
