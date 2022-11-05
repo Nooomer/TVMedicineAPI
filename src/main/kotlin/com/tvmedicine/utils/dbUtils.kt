@@ -1,9 +1,6 @@
 package com.tvmedicine.utils
 
-import com.tvmedicine.models.PatientSModel
-import com.tvmedicine.models.TreatmentSModel
-import com.tvmedicine.models.patients
-import com.tvmedicine.models.treatment
+import com.tvmedicine.models.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -11,49 +8,53 @@ import java.sql.Connection
 
 interface dbUtils {
     companion object {
-        private val patientSModelStorage = mutableListOf<PatientSModel>()
+        private val usersSModelStorage = mutableListOf<UsersSModel>()
         private val treatmentSModelStorage = mutableListOf<TreatmentSModel>()
+        private val doctorSModelStorage = mutableListOf<TreatmentSModel>()
         private fun addToStorage(storageType: String, patient: ResultRow, treatments: ResultRow = patient) {
             when (storageType) {
                 "patientSModelStorage" -> {
-                    patientSModelStorage.add(classField.newPatientsList(patients, patient))
+                    usersSModelStorage.add(classField.newPatientsList(users, patient))
                 }
                 "treatmentSModelStorage" -> {
                     treatmentSModelStorage.add(classField.newTreatmentList(treatment, treatments))
                 }
+                "doctorSModelStorage" -> {
+                    doctorSModelStorage.add(classField.newTreatmentList(treatment, treatments))
+                }
             }
         }
 
-        fun getAllPatients(): MutableList<PatientSModel> {
+        fun getAllPatients(): MutableList<UsersSModel> {
             transaction(Connection.TRANSACTION_SERIALIZABLE, 2) {
                 addLogger(StdOutSqlLogger)
-                SchemaUtils.create(patients)
-                for (patient in patients.selectAll()) {
+                SchemaUtils.create(users)
+                for (patient in users.selectAll()) {
                     addToStorage("patientSModelStorage", patient)
                 }
             }
-            return patientSModelStorage
+            return usersSModelStorage
         }
 
-        fun getPatientById(id: Int): MutableList<PatientSModel> {
+        fun getPatientById(id: Int): MutableList<UsersSModel> {
             transaction {
                 addLogger(StdOutSqlLogger)
-                SchemaUtils.create(patients)
-                for (patient in patients.select(patients.id eq id)) {
+                SchemaUtils.create(users)
+                for (patient in users.select(users.id eq id)) {
                     addToStorage("patientSModelStorage", patient)
                 }
             }
-            return patientSModelStorage
+            return usersSModelStorage
         }
-        fun getPatientByLogin(login: String): MutableList<PatientSModel> {
+        fun getPatientByLogin(login: String): MutableList<UsersSModel> {
             transaction {
                 addLogger(StdOutSqlLogger)
-                SchemaUtils.create(patients)
-                for (patient in patients.select(patients.phone_number eq login)) {
+                SchemaUtils.create(users)
+                for (patient in users.select(users.phone_number eq login)) {
                     addToStorage("patientSModelStorage", patient)
                 }
             }
-            return patientSModelStorage
+            return usersSModelStorage
         }
 
         fun getAllTreatment(): MutableList<TreatmentSModel> {
@@ -67,11 +68,22 @@ interface dbUtils {
             return treatmentSModelStorage
         }
 
-        fun addNewPatient(patient: PatientSModel) {
+        fun getTreatmentById(id: Int): MutableList<TreatmentSModel> {
             transaction {
                 addLogger(StdOutSqlLogger)
                 SchemaUtils.create(treatment)
-                patients.insert {
+                for (treatments in treatment.select(treatment.id eq id)) {
+                    addToStorage("treatmentSModelStorage", treatments)
+                }
+            }
+            return treatmentSModelStorage
+        }
+
+        fun addNewPatient(patient: UsersSModel) {
+            transaction {
+                addLogger(StdOutSqlLogger)
+                SchemaUtils.create(treatment)
+                users.insert {
                     it[surename] = patient.Surename
                     it[name] = patient.name
                     it[s_name] = patient.s_name

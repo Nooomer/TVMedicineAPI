@@ -1,8 +1,7 @@
 package com.tvmedicine.routes
 
-import com.tvmedicine.models.PatientSModel
+import com.tvmedicine.models.UsersSModel
 import com.tvmedicine.models.Responds
-import com.tvmedicine.models.patients
 import com.tvmedicine.utils.dbUtils
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -11,20 +10,17 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.transactions.transaction
 
 @OptIn(ExperimentalSerializationApi::class)
 fun Route.patientRouting() {
-    var patientSModelStorage = mutableListOf<PatientSModel>()
+    var usersSModelStorage = mutableListOf<UsersSModel>()
 
     route("/patient") {
         get {
-            patientSModelStorage = dbUtils.getAllPatients()
-            if (patientSModelStorage.isNotEmpty()) {
-                call.respond(patientSModelStorage)
-                patientSModelStorage.clear()
+            usersSModelStorage = dbUtils.getAllPatients()
+            if (usersSModelStorage.isNotEmpty()) {
+                call.respond(usersSModelStorage)
+                usersSModelStorage.clear()
             } else {
                 Responds.NotFoundError("patient",call)
             }
@@ -34,17 +30,17 @@ fun Route.patientRouting() {
                 "Missing id",
                 status = HttpStatusCode.BadRequest
             ))
-            patientSModelStorage = dbUtils.getPatientById(id.toInt())
-            if (patientSModelStorage.isNotEmpty()) {
-                call.respond(patientSModelStorage)
-                patientSModelStorage.clear()
+            usersSModelStorage = dbUtils.getPatientById(id.toInt())
+            if (usersSModelStorage.isNotEmpty()) {
+                call.respond(usersSModelStorage)
+                usersSModelStorage.clear()
             } else {
                 Responds.NotFoundError("patient",call)
             }
         }
         post() {
             try {
-                val patient = call.receive<PatientSModel>()
+                val patient = call.receive<UsersSModel>()
                 dbUtils.addNewPatient(patient)
                 Responds.Created("Patient", call)
             } catch (e: MissingFieldException) {

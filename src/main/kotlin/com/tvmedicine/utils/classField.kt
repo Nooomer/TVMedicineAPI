@@ -1,22 +1,23 @@
 package com.tvmedicine.utils
 
-import com.tvmedicine.models.PatientSModel
+import com.tvmedicine.models.UsersSModel
 import com.tvmedicine.models.TreatmentSModel
-import com.tvmedicine.models.patients
+import com.tvmedicine.models.users
 import com.tvmedicine.models.treatment
 import org.jetbrains.exposed.sql.ResultRow
 
 interface classField {
     companion object{
-        fun newPatientsList(dbData: patients, patientObj: ResultRow): PatientSModel {
-            return PatientSModel(
-                patientObj[patients.id],
-                patientObj[patients.surename],
-                patientObj[patients.name],
-                patientObj[patients.s_name],
-                patientObj[patients.phone_number],
-                patientObj[patients.insurance_policy_number],
-                patientObj[patients.password]
+        fun newPatientsList(dbData: users, patientObj: ResultRow): UsersSModel {
+            return UsersSModel(
+                patientObj[users.id],
+                patientObj[users.surename],
+                patientObj[users.name],
+                patientObj[users.s_name],
+                patientObj[users.phone_number],
+                patientObj[users.insurance_policy_number],
+                patientObj[users.password],
+                patientObj[users.user_type]
          )
         }
         fun newTreatmentList(dbData: treatment, treatmentObj: ResultRow): TreatmentSModel {
