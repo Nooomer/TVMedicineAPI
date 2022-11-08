@@ -78,7 +78,26 @@ interface dbUtils {
             }
             return treatmentSModelStorage
         }
-
+        fun getTreatmentByPatientId(patient_id: Int): MutableList<TreatmentSModel> {
+            transaction {
+                addLogger(StdOutSqlLogger)
+                SchemaUtils.create(treatment)
+                for (treatments in treatment.select(treatment.patient_id eq patient_id)) {
+                    addToStorage("treatmentSModelStorage", treatments)
+                }
+            }
+            return treatmentSModelStorage
+        }
+        fun getTreatmentByTreatIdAndPatientId(patient_id: Int, treat_id: Int): MutableList<TreatmentSModel> {
+            transaction {
+                addLogger(StdOutSqlLogger)
+                SchemaUtils.create(treatment)
+                for (treatments in treatment.select((treatment.patient_id eq patient_id) and (treatment.id eq treat_id))) {
+                    addToStorage("treatmentSModelStorage", treatments)
+                }
+            }
+            return treatmentSModelStorage
+        }
         fun addNewPatient(patient: UsersSModel) {
             transaction {
                 addLogger(StdOutSqlLogger)
