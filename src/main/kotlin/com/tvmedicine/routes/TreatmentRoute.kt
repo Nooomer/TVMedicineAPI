@@ -2,14 +2,13 @@ package com.tvmedicine.routes
 
 import com.tvmedicine.models.*
 import com.tvmedicine.utils.dbUtils
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
 
 @OptIn(ExperimentalSerializationApi::class)
 fun Route.treatmentRouting() {
@@ -19,14 +18,7 @@ fun Route.treatmentRouting() {
         get {
             treatmentStorage = dbUtils.getAllTreatment()
             if (treatmentStorage.isNotEmpty()) {
-                for(i in treatmentStorage.indices) {
-treatmentStorage_new.add(
-    FrontTreatment(
-        dbUtils.getPatientById(treatmentStorage[i].patient_id)[i].Surename,
-        dbUtils.getPatientById(treatmentStorage[i].doctor_id)[i].Surename,
-        treatmentStorage[i].start_date))
-                }
-                call.respond(treatmentStorage_new)
+                call.respond(treatmentStorage.toFront(treatmentStorage_new))
                 treatmentStorage_new.clear()
                 treatmentStorage.clear()
             } else {
@@ -35,6 +27,38 @@ treatmentStorage_new.add(
         }
         get("{id?}") {
 
+        }
+        get("{treat_id?}/patient/{patient_id?}") {
+            val patient_id = (call.parameters["patient_id"] ?: return@get call.respondText(
+                "Missing patient_id",
+                status = HttpStatusCode.BadRequest
+            )).toInt()
+            val treatment_id = (call.parameters["treat_id"] ?: return@get call.respondText(
+                "Missing treat_id",
+                status = HttpStatusCode.BadRequest
+            )).toInt()
+            treatmentStorage = dbUtils.getTreatmentByTreatIdAndPatientId(patient_id,treatment_id)
+            if (treatmentStorage.isNotEmpty()) {
+                call.respond(treatmentStorage.toFront(treatmentStorage_new))
+                treatmentStorage_new.clear()
+                treatmentStorage.clear()
+            } else {
+                Responds.NotFoundError("treatment", call)
+            }
+        }
+        get("/patient/{patient_id?}") {
+            val id = (call.parameters["patient_id"] ?: return@get call.respondText(
+                "Missing patient_id",
+                status = HttpStatusCode.BadRequest
+            )).toInt()
+            treatmentStorage = dbUtils.getTreatmentByPatientId(id)
+            if (treatmentStorage.isNotEmpty()) {
+                call.respond(treatmentStorage.toFront(treatmentStorage_new))
+                treatmentStorage_new.clear()
+                treatmentStorage.clear()
+            } else {
+                Responds.NotFoundError("treatment", call)
+            }
         }
         post() {
             try {
@@ -49,4 +73,15 @@ treatmentStorage_new.add(
 
         }
     }
+}
+
+fun MutableList<TreatmentSModel>.toFront(treatmentStorage_new: MutableList<FrontTreatment>): MutableList<FrontTreatment> {
+    for(i in this.indices) {
+        treatmentStorage_new.add(
+            FrontTreatment(
+                dbUtils.getPatientById(this[i].patient_id)[i].Surename,
+                dbUtils.getPatientById(this[i].doctor_id)[i].Surename,
+                this[i].start_date))
+    }
+    return treatmentStorage_new
 }
