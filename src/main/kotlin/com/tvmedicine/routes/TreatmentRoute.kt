@@ -7,6 +7,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.util.pipeline.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
 
@@ -38,13 +39,7 @@ fun Route.treatmentRouting() {
                 status = HttpStatusCode.BadRequest
             )).toInt()
             treatmentStorage = dbUtils.getTreatmentByTreatIdAndPatientId(patient_id,treatment_id)
-            if (treatmentStorage.isNotEmpty()) {
-                call.respond(treatmentStorage.toFront(treatmentStorage_new))
-                treatmentStorage_new.clear()
-                treatmentStorage.clear()
-            } else {
-                Responds.NotFoundError("treatment", call)
-            }
+            treatmentOutput(treatmentStorage, treatmentStorage_new)
         }
         get("/patient/{patient_id?}") {
             val id = (call.parameters["patient_id"] ?: return@get call.respondText(
@@ -52,13 +47,7 @@ fun Route.treatmentRouting() {
                 status = HttpStatusCode.BadRequest
             )).toInt()
             treatmentStorage = dbUtils.getTreatmentByPatientId(id)
-            if (treatmentStorage.isNotEmpty()) {
-                call.respond(treatmentStorage.toFront(treatmentStorage_new))
-                treatmentStorage_new.clear()
-                treatmentStorage.clear()
-            } else {
-                Responds.NotFoundError("treatment", call)
-            }
+            treatmentOutput(treatmentStorage, treatmentStorage_new)
         }
         post() {
             try {
@@ -72,6 +61,18 @@ fun Route.treatmentRouting() {
         delete("{id?}") {
 
         }
+    }
+}
+private suspend fun PipelineContext<Unit, ApplicationCall>.treatmentOutput(
+    treatmentStorage: MutableList<TreatmentSModel>,
+    treatmentStorage_new: MutableList<FrontTreatment>
+) {
+    if (treatmentStorage.isNotEmpty()) {
+        call.respond(treatmentStorage.toFront(treatmentStorage_new))
+        treatmentStorage_new.clear()
+        treatmentStorage.clear()
+    } else {
+        Responds.NotFoundError("treatment", call)
     }
 }
 
