@@ -38,7 +38,7 @@ fun Application.configureRouting() {
                         .withClaim("login", user.login)
                         .withExpiresAt(Date(System.currentTimeMillis() + 6000000000))
                         .sign(Algorithm.HMAC256("secret"))
-                    call.respond(hashMapOf("token" to token, "user_type" to usersSModelStorage[0].user_type))
+                    call.respond(hashMapOf("token" to token, "user_type" to usersSModelStorage[0].user_type, "user_id" to usersSModelStorage[0].id.toString()))
                 }
                 else
                 {
