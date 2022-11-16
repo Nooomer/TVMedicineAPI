@@ -33,8 +33,8 @@ fun Application.configureRouting() {
                 usersSModelStorage = dbUtils.getPatientByLogin(user.login)
                 if(usersSModelStorage[0].password==user.password) {
                     val token = JWT.create()
-                        .withAudience("http://127.0.0.1:8080/")
-                        .withIssuer("http://127.0.0.1:8080/")
+                        .withAudience("https://tvmed.herokuapp.com/")
+                        .withIssuer("https://tvmed.herokuapp.com/")
                         .withClaim("login", user.login)
                         .withExpiresAt(Date(System.currentTimeMillis() + 6000000000))
                         .sign(Algorithm.HMAC256("secret"))
