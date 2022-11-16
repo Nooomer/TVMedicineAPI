@@ -19,8 +19,8 @@ fun Application.configureSecurity() {
             verifier(
                 JWT
                 .require(Algorithm.HMAC256("secret"))
-                .withAudience("http://127.0.0.1:8080/")
-                .withIssuer("http://127.0.0.1:8080/")
+                .withAudience("https://tvmed.herokuapp.com/")
+                .withIssuer("https://tvmed.herokuapp.com/")
                 .build())
             validate { credential ->
                 if (credential.payload.getClaim("login").asString() != "") {
