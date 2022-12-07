@@ -2,10 +2,12 @@ package com.tvmedicine.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.typesafe.config.ConfigFactory
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import io.ktor.server.config.*
 import io.ktor.server.response.*
 
 fun Application.configureSecurity() {
@@ -15,12 +17,13 @@ fun Application.configureSecurity() {
     //val myRealm = environment.config.property("jwt.realm").getString()
     install(Authentication) {
         jwt("auth-jwt") {
-            realm = "Access"
+            val appConfig = HoconApplicationConfig(ConfigFactory.load())
+            realm = appConfig.property("ktor.jwt.realm").getString()
             verifier(
                 JWT
-                .require(Algorithm.HMAC256("secret"))
-                .withAudience("https://tvmed.herokuapp.com/")
-                .withIssuer("https://tvmed.herokuapp.com/")
+                .require(Algorithm.HMAC256(appConfig.property("ktor.jwt.secret").getString()))
+                .withAudience(appConfig.property("ktor.jwt.audience").getString())
+                .withIssuer(appConfig.property("ktor.jwt.issuer").getString())
                 .build())
             validate { credential ->
                 if (credential.payload.getClaim("login").asString() != "") {
