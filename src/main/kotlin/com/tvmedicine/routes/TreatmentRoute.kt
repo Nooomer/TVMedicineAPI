@@ -80,8 +80,8 @@ fun MutableList<TreatmentSModel>.toFront(treatmentStorage_new: MutableList<Front
     for(i in this.indices) {
         treatmentStorage_new.add(
             FrontTreatment(
-                dbUtils.getPatientById(this[i].patient_id)[i].Surename,
-                dbUtils.getPatientById(this[i].doctor_id)[i].Surename,
+                dbUtils.getPatientById(this[i].patient_id)[0].Surename,
+                dbUtils.getPatientById(this[i].doctor_id)[0].Surename,
                 this[i].start_date))
     }
     return treatmentStorage_new
