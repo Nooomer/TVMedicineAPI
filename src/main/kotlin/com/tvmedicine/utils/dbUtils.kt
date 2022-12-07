@@ -37,6 +37,7 @@ interface dbUtils {
         }
 
         fun getPatientById(id: Int): MutableList<UsersSModel> {
+            usersSModelStorage.clear()
             transaction {
                 addLogger(StdOutSqlLogger)
                 SchemaUtils.create(users)
