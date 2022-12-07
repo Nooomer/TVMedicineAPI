@@ -58,7 +58,7 @@ interface dbUtils {
         }
 
         fun getAllTreatment(): MutableList<TreatmentSModel> {
-            transaction {
+            transaction(Connection.TRANSACTION_SERIALIZABLE, 2) {
                 addLogger(StdOutSqlLogger)
                 SchemaUtils.create(treatment)
                 for (treatments in treatment.selectAll()) {
