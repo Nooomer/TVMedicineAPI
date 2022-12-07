@@ -1,1 +1,0 @@
-web: ./build/install/TVMedicine-API/bin/TVMedicine-API
