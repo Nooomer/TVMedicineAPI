@@ -31,10 +31,11 @@ fun Application.configureRouting() {
         get("/user_type") {
             call.respondText("Hello World!")
         }
-            post("/login") {
-                val user = call.receive<User>()
-                usersSModelStorage = dbUtils.getPatientByLogin(user.login)
-                if(usersSModelStorage[0].password==user.password) {
+        post("/login") {
+            val user = call.receive<User>()
+            usersSModelStorage = dbUtils.getPatientByLogin(user.login)
+            if (usersSModelStorage.size != 0) {
+                if (usersSModelStorage[0].password == user.password) {
                     val token = JWT.create()
                         .withAudience(appConfig.property("ktor.jwt.audience").getString())
                         .withIssuer(appConfig.property("ktor.jwt.issuer").getString())
@@ -51,11 +52,10 @@ fun Application.configureRouting() {
                 } else {
                     Responds.CredentialError(call)
                 }
-                else
-                {
-                    Responds.CredentialError(call)
-                }
+            } else {
+                Responds.CredentialError(call)
             }
+        }
         authenticate("auth-jwt") {
             patientRouting()
             treatmentRouting()
