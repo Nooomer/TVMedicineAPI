@@ -22,7 +22,7 @@ fun Route.patientRouting() {
                 call.respond(usersSModelStorage)
                 usersSModelStorage.clear()
             } else {
-                Responds.NotFoundError("patient",call)
+                Responds.NotFoundError("patient", call)
             }
         }
         get("{id?}") {
@@ -35,7 +35,7 @@ fun Route.patientRouting() {
                 call.respond(usersSModelStorage)
                 usersSModelStorage.clear()
             } else {
-                Responds.NotFoundError("patient",call)
+                Responds.NotFoundError("patient", call)
             }
         }
         post() {

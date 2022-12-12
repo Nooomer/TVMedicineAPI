@@ -21,10 +21,11 @@ fun Application.configureSecurity() {
             realm = appConfig.property("ktor.jwt.realm").getString()
             verifier(
                 JWT
-                .require(Algorithm.HMAC256(appConfig.property("ktor.jwt.secret").getString()))
-                .withAudience(appConfig.property("ktor.jwt.audience").getString())
-                .withIssuer(appConfig.property("ktor.jwt.issuer").getString())
-                .build())
+                    .require(Algorithm.HMAC256(appConfig.property("ktor.jwt.secret").getString()))
+                    .withAudience(appConfig.property("ktor.jwt.audience").getString())
+                    .withIssuer(appConfig.property("ktor.jwt.issuer").getString())
+                    .build()
+            )
             validate { credential ->
                 if (credential.payload.getClaim("login").asString() != "") {
                     JWTPrincipal(credential.payload)

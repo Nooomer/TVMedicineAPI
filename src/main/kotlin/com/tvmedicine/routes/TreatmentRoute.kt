@@ -23,7 +23,7 @@ fun Route.treatmentRouting() {
                 treatmentStorage_new.clear()
                 treatmentStorage.clear()
             } else {
-               Responds.NotFoundError("treatment", call)
+                Responds.NotFoundError("treatment", call)
             }
         }
         get("{id?}") {
@@ -38,7 +38,7 @@ fun Route.treatmentRouting() {
                 "Missing treat_id",
                 status = HttpStatusCode.BadRequest
             )).toInt()
-            treatmentStorage = dbUtils.getTreatmentByTreatIdAndPatientId(patient_id,treatment_id)
+            treatmentStorage = dbUtils.getTreatmentByTreatIdAndPatientId(patient_id, treatment_id)
             treatmentOutput(treatmentStorage, treatmentStorage_new)
         }
         get("/patient/{patient_id?}") {
@@ -63,6 +63,7 @@ fun Route.treatmentRouting() {
         }
     }
 }
+
 private suspend fun PipelineContext<Unit, ApplicationCall>.treatmentOutput(
     treatmentStorage: MutableList<TreatmentSModel>,
     treatmentStorage_new: MutableList<FrontTreatment>
@@ -77,12 +78,14 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.treatmentOutput(
 }
 
 fun MutableList<TreatmentSModel>.toFront(treatmentStorage_new: MutableList<FrontTreatment>): MutableList<FrontTreatment> {
-    for(i in this.indices) {
+    for (i in this.indices) {
         treatmentStorage_new.add(
             FrontTreatment(
                 dbUtils.getPatientById(this[i].patient_id)[0].Surename,
                 dbUtils.getPatientById(this[i].doctor_id)[0].Surename,
-                this[i].start_date))
+                this[i].start_date
+            )
+        )
     }
     return treatmentStorage_new
 }
