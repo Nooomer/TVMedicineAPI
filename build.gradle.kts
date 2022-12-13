@@ -10,7 +10,6 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("io.ktor.plugin") version "2.1.3"
 }
-
 group = "com.tvmedicine"
 version = "0.0.1"
 application {
