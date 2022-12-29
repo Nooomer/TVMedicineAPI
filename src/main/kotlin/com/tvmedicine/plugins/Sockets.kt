@@ -1,6 +1,8 @@
 package com.tvmedicine.plugins
 
+import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
@@ -15,17 +17,33 @@ fun Application.configureSockets() {
     }
 
     routing {
-        webSocket("/chat") { // websocketSession
-            for (frame in incoming) {
-                when (frame) {
-                    is Frame.Text -> {
-                        val text = frame.readText()
-                        outgoing.send(Frame.Text("YOU SAID: $text"))
-                        if (text.equals("bye", ignoreCase = true)) {
-                            close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
+        webSocket("/chat/{id}") {
+            if((call.parameters["id"])=="1") {// websocketSession
+                for (frame in incoming) {
+                    when (frame) {
+                        is Frame.Text -> {
+                            val text = frame.readText()
+                            outgoing.send(Frame.Text("YOU SAID(id1): $text"))
+                            if (text.equals("bye", ignoreCase = true)) {
+                                close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
+                            }
                         }
+                        else -> {}
                     }
-                    else -> {}
+                }
+            }
+            else{
+                for (frame in incoming) {
+                    when (frame) {
+                        is Frame.Text -> {
+                            val text = frame.readText()
+                            outgoing.send(Frame.Text("YOU SAID(id not 1): $text"))
+                            if (text.equals("bye", ignoreCase = true)) {
+                                close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
+                            }
+                        }
+                        else -> {}
+                    }
                 }
             }
         }
