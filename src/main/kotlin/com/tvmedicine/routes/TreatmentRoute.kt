@@ -61,7 +61,9 @@ fun Route.treatmentRouting() {
             )).toInt()
                 treatmentStorage = dbUtils.getTreatmentById(treat_id)
                 ChatStorage = dbUtils.getChatById(treatmentStorage[0].chat_id)
+            print(ChatStorage)
                 MessagesStorage = dbUtils.getMessageByChat(ChatStorage[0].id)
+            print(MessagesStorage)
             messagesOutput(MessagesStorage, MessagesStorage_new)
             }
         post() {
