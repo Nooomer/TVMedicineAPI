@@ -102,7 +102,7 @@ interface dbUtils {
             transaction {
                 addLogger(StdOutSqlLogger)
                 //SchemaUtils.create(treatment)
-                for (messagess in messages.select(messages.id eq id)) {
+                for (messagess in messages.selectAll()) {
                     addToStorage("treatmentSModelStorage", messagess)
                 }
             }
