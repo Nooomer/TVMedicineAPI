@@ -59,16 +59,16 @@ fun Route.treatmentRouting() {
                 "Missing treatment id",
                 status = HttpStatusCode.BadRequest
             )).toInt()
+            treatmentStorage.clear()
+            treatmentStorage_new.clear()
+            MessagesStorage.clear()
+            MessagesStorage_new.clear()
                 treatmentStorage = dbUtils.getTreatmentById(treat_id)
                 ChatStorage = dbUtils.getChatById(treatmentStorage[0].chat_id)
             print(ChatStorage)
                 MessagesStorage = dbUtils.getMessageByChat(ChatStorage[0].id)
             print(MessagesStorage)
             messagesOutput(MessagesStorage, MessagesStorage_new)
-            treatmentStorage.clear()
-            treatmentStorage_new.clear()
-            MessagesStorage.clear()
-            MessagesStorage_new.clear()
             }
         post() {
             try {

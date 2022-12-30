@@ -99,6 +99,7 @@ interface dbUtils {
             return chatSModelStorage
         }
         fun getMessageByChat(id: Int): MutableList<MessagesSModel> {
+
             transaction {
                 addLogger(StdOutSqlLogger)
                 //SchemaUtils.create(treatment)
