@@ -1,4 +1,4 @@
-package com.tvmedicine.models
+package com.tvmedicine.utils
 
 import io.ktor.http.*
 import io.ktor.server.application.*

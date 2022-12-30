@@ -1,4 +1,4 @@
-package com.tvmedicine.models
+package com.tvmedicine.dbModels
 
 import org.jetbrains.exposed.sql.Table
 

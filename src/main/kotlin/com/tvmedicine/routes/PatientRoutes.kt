@@ -1,7 +1,7 @@
 package com.tvmedicine.routes
 
 import com.tvmedicine.models.UsersSModel
-import com.tvmedicine.models.Responds
+import com.tvmedicine.utils.Responds
 import com.tvmedicine.utils.dbUtils
 import io.ktor.http.*
 import io.ktor.server.application.*
