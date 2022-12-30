@@ -3,10 +3,9 @@ package com.tvmedicine.plugins
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.tvmedicine.models.UsersSModel
-import com.tvmedicine.models.Responds
-import com.tvmedicine.models.User
-import com.tvmedicine.routes.patientRouting
-import com.tvmedicine.routes.treatmentRouting
+import com.tvmedicine.utils.Responds
+import com.tvmedicine.models.LoginData
+import com.tvmedicine.routes.*
 import com.tvmedicine.utils.dbUtils
 import com.typesafe.config.ConfigFactory
 import io.ktor.server.application.*
@@ -32,14 +31,14 @@ fun Application.configureRouting() {
             call.respondText("Hello World!")
         }
         post("/login") {
-            val user = call.receive<User>()
-            usersSModelStorage = dbUtils.getPatientByLogin(user.login)
+            val loginData = call.receive<LoginData>()
+            usersSModelStorage = dbUtils.getPatientByLogin(loginData.login)
             if (usersSModelStorage.size != 0) {
-                if (usersSModelStorage[0].password == user.password) {
+                if (usersSModelStorage[0].password == loginData.password) {
                     val token = JWT.create()
                         .withAudience(appConfig.property("ktor.jwt.audience").getString())
                         .withIssuer(appConfig.property("ktor.jwt.issuer").getString())
-                        .withClaim("login", user.login)
+                        .withClaim("login", loginData.login)
                         .withExpiresAt(Date(System.currentTimeMillis() + 6000000000))
                         .sign(Algorithm.HMAC256(appConfig.property("ktor.jwt.secret").getString()))
                     call.respond(

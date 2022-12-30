@@ -1,9 +1,7 @@
 package com.tvmedicine.utils
 
-import com.tvmedicine.models.UsersSModel
-import com.tvmedicine.models.TreatmentSModel
-import com.tvmedicine.models.users
-import com.tvmedicine.models.treatment
+import com.tvmedicine.models.*
+import com.tvmedicine.dbModels.*
 import org.jetbrains.exposed.sql.ResultRow
 
 interface classField {
@@ -30,6 +28,22 @@ interface classField {
                 treatmentObj[treatment.symptoms_id],
                 treatmentObj[treatment.sound_server_link_id],
                 treatmentObj[treatment.conclusion_id]
+            )
+        }
+        fun newChatList(dbData: chat, chatObj: ResultRow): ChatSModel {
+            return ChatSModel(
+                chatObj[dbData.id],
+                chatObj[dbData.treatmentId]
+            )
+        }
+        fun newMessagesList(dbData: messages, chatObj: ResultRow): MessagesSModel {
+            return MessagesSModel(
+                chatObj[dbData.id],
+                chatObj[dbData.message_text],
+                chatObj[dbData.chat_id],
+                chatObj[dbData.fromId],
+                chatObj[dbData.toId],
+                chatObj[dbData.send_time],
             )
         }
     }

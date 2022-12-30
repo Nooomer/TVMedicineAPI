@@ -1,5 +1,6 @@
 package com.tvmedicine.utils
 
+import com.tvmedicine.dbModels.*
 import com.tvmedicine.models.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -11,16 +12,24 @@ interface dbUtils {
         private val usersSModelStorage = mutableListOf<UsersSModel>()
         private val treatmentSModelStorage = mutableListOf<TreatmentSModel>()
         private val doctorSModelStorage = mutableListOf<TreatmentSModel>()
-        private fun addToStorage(storageType: String, patient: ResultRow, treatments: ResultRow = patient) {
+        private val chatSModelStorage = mutableListOf<ChatSModel>()
+        private val messagesSModelStorage = mutableListOf<MessagesSModel>()
+        private fun addToStorage(storageType: String,resultRowsType: ResultRow) {
             when (storageType) {
                 "patientSModelStorage" -> {
-                    usersSModelStorage.add(classField.newPatientsList(users, patient))
+                    usersSModelStorage.add(classField.newPatientsList(users, resultRowsType))
                 }
                 "treatmentSModelStorage" -> {
-                    treatmentSModelStorage.add(classField.newTreatmentList(treatment, treatments))
+                    treatmentSModelStorage.add(classField.newTreatmentList(treatment, resultRowsType))
                 }
                 "doctorSModelStorage" -> {
-                    doctorSModelStorage.add(classField.newTreatmentList(treatment, treatments))
+                    doctorSModelStorage.add(classField.newTreatmentList(treatment, resultRowsType))
+                }
+                "ChatSModelStorage" -> {
+                chatSModelStorage.add(classField.newChatList(chat, resultRowsType))
+                }
+                "MessagesSModelStorage" -> {
+                    messagesSModelStorage.add(classField.newMessagesList(messages, resultRowsType))
                 }
             }
         }
@@ -78,6 +87,26 @@ interface dbUtils {
                 }
             }
             return treatmentSModelStorage
+        }
+        fun getChatById(id: Int): MutableList<ChatSModel> {
+            transaction {
+                addLogger(StdOutSqlLogger)
+                //SchemaUtils.create(chat)
+                for (Chats in chat.select(chat.id eq id)) {
+                    addToStorage("treatmentSModelStorage", Chats)
+                }
+            }
+            return chatSModelStorage
+        }
+        fun getMessageByChat(id: Int): MutableList<MessagesSModel> {
+            transaction {
+                addLogger(StdOutSqlLogger)
+                //SchemaUtils.create(treatment)
+                for (messagess in messages.select(messages.id eq id)) {
+                    addToStorage("treatmentSModelStorage", messagess)
+                }
+            }
+            return messagesSModelStorage
         }
         fun getTreatmentByPatientId(patient_id: Int): MutableList<TreatmentSModel> {
             transaction {
