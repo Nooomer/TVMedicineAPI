@@ -65,6 +65,10 @@ fun Route.treatmentRouting() {
                 MessagesStorage = dbUtils.getMessageByChat(ChatStorage[0].id)
             print(MessagesStorage)
             messagesOutput(MessagesStorage, MessagesStorage_new)
+            treatmentStorage.clear()
+            treatmentStorage_new.clear()
+            MessagesStorage.clear()
+            MessagesStorage_new.clear()
             }
         post() {
             try {
