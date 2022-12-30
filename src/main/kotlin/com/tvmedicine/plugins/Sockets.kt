@@ -1,12 +1,13 @@
 package com.tvmedicine.plugins
 
-import io.ktor.http.*
+import com.tvmedicine.utils.Connection
+import io.ktor.websocket.*
 import io.ktor.server.application.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
-import io.ktor.websocket.*
-import java.time.Duration
+import java.time.*
+import java.util.*
+import kotlin.collections.LinkedHashSet
 
 fun Application.configureSockets() {
     install(WebSockets) {
@@ -18,34 +19,49 @@ fun Application.configureSockets() {
 
     routing {
         webSocket("/chat/{id}") {
+            val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
             if((call.parameters["id"])=="1") {// websocketSession
-                for (frame in incoming) {
-                    when (frame) {
-                        is Frame.Text -> {
-                            val text = frame.readText()
-                            outgoing.send(Frame.Text("YOU SAID(id1): $text"))
-                            if (text.equals("bye", ignoreCase = true)) {
-                                close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
+                    println("Adding user!")
+                    val thisConnection = Connection(this)
+                    connections += thisConnection
+                    try {
+                        send("You are connected to chat 1! There are ${connections.count()} users here.")
+                        for (frame in incoming) {
+                            frame as? Frame.Text ?: continue
+                            val receivedText = frame.readText()
+                            val textWithUsername = "[${thisConnection.name}]: $receivedText"
+                            connections.forEach {
+                                it.session.send(textWithUsername)
                             }
                         }
-                        else -> {}
+                    } catch (e: Exception) {
+                        println(e.localizedMessage)
+                    } finally {
+                        println("Removing $thisConnection!")
+                        connections -= thisConnection
                     }
+                }
+            else{
+                println("Adding user!")
+                val thisConnection = Connection(this)
+                connections += thisConnection
+                try {
+                    send("You are connected to chat 2! There are ${connections.count()} users here.")
+                    for (frame in incoming) {
+                        frame as? Frame.Text ?: continue
+                        val receivedText = frame.readText()
+                        val textWithUsername = "[${thisConnection.name}]: $receivedText"
+                        connections.forEach {
+                            it.session.send(textWithUsername)
+                        }
+                    }
+                } catch (e: Exception) {
+                    println(e.localizedMessage)
+                } finally {
+                    println("Removing $thisConnection!")
+                    connections -= thisConnection
                 }
             }
-            else{
-                for (frame in incoming) {
-                    when (frame) {
-                        is Frame.Text -> {
-                            val text = frame.readText()
-                            outgoing.send(Frame.Text("YOU SAID(id not 1): $text"))
-                            if (text.equals("bye", ignoreCase = true)) {
-                                close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
-                            }
-                        }
-                        else -> {}
-                    }
-                }
             }
         }
-    }
 }
