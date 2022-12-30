@@ -26,7 +26,7 @@ interface dbUtils {
                     doctorSModelStorage.add(classField.newTreatmentList(treatment, resultRowsType))
                 }
                 "ChatSModelStorage" -> {
-                chatSModelStorage.add(classField.newChatList(chat, resultRowsType))
+                chatSModelStorage.add(classField.newChatList(chats, resultRowsType))
                 }
                 "MessagesSModelStorage" -> {
                     messagesSModelStorage.add(classField.newMessagesList(messages, resultRowsType))
@@ -91,8 +91,8 @@ interface dbUtils {
         fun getChatById(id: Int): MutableList<ChatSModel> {
             transaction {
                 addLogger(StdOutSqlLogger)
-                //SchemaUtils.create(chat)
-                for (Chats in chat.select(chat.id eq id)) {
+                //SchemaUtils.create(chats)
+                for (Chats in chats.select(chats.id eq id)) {
                     addToStorage("treatmentSModelStorage", Chats)
                 }
             }

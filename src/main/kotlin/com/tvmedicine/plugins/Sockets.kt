@@ -18,14 +18,14 @@ fun Application.configureSockets() {
     }
 
     routing {
-       /* webSocket("/chat/{id}") {
+       /* webSocket("/chats/{id}") {
             val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
             if((call.parameters["id"])=="1") {// websocketSession
                     println("Adding user!")
                     val thisConnection = Connection(this)
                     connections += thisConnection
                     try {
-                        send("You are connected to chat 1! There are ${connections.count()} users here.")
+                        send("You are connected to chats 1! There are ${connections.count()} users here.")
                         for (frame in incoming) {
                             frame as? Frame.Text ?: continue
                             val receivedText = frame.readText()
@@ -46,7 +46,7 @@ fun Application.configureSockets() {
                 val thisConnection = Connection(this)
                 connections += thisConnection
                 try {
-                    send("You are connected to chat 2! There are ${connections.count()} users here.")
+                    send("You are connected to chats 2! There are ${connections.count()} users here.")
                     for (frame in incoming) {
                         frame as? Frame.Text ?: continue
                         val receivedText = frame.readText()

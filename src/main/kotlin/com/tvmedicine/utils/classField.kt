@@ -30,7 +30,7 @@ interface classField {
                 treatmentObj[treatment.conclusion_id]
             )
         }
-        fun newChatList(dbData: chat, chatObj: ResultRow): ChatSModel {
+        fun newChatList(dbData: chats, chatObj: ResultRow): ChatSModel {
             return ChatSModel(
                 chatObj[dbData.id],
                 chatObj[dbData.treatmentId]

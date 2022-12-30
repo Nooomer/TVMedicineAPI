@@ -3,7 +3,6 @@ package com.tvmedicine.routes
 import com.tvmedicine.dbModels.treatment
 import com.tvmedicine.models.*
 import com.tvmedicine.utils.Responds
-import com.tvmedicine.utils.Utils
 import com.tvmedicine.utils.dbUtils
 import io.ktor.http.*
 import io.ktor.server.application.*
