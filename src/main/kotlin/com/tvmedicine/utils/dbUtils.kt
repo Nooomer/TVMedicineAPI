@@ -93,7 +93,7 @@ interface dbUtils {
                 addLogger(StdOutSqlLogger)
                 //SchemaUtils.create(chats)
                 for (Chats in chats.select(chats.id eq id)) {
-                    addToStorage("treatmentSModelStorage", Chats)
+                    addToStorage("ChatSModelStorage", Chats)
                 }
             }
             return chatSModelStorage
