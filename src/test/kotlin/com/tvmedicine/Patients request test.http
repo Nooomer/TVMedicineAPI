@@ -1,4 +1,5 @@
-GET http://localhost:8080/patient
+GET http://185.87.48.154:8090/treatment/1/patient/4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJodHRwczovL3R2bWVkLmhlcm9rdWFwcC5jb20vIiwiaXNzIjoiaHR0cHM6Ly90dm1lZC5oZXJva3VhcHAuY29tLyIsImxvZ2luIjoidGVzdCIsImV4cCI6MTY3NDYwNTIwM30.q5VhG_hslkwTZSeqpaFvaABTd2QpkC8KY8JoiHPdAws
 
 > {%
 client.test("Request executed successfully", function() {
@@ -8,10 +9,11 @@ client.test("Request executed successfully", function() {
 
 ###
 
-GET http://localhost:8080/patient/4
+GET http://185.87.48.154:8090/treatment/2/patient/4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJodHRwczovL3R2bWVkLmhlcm9rdWFwcC5jb20vIiwiaXNzIjoiaHR0cHM6Ly90dm1lZC5oZXJva3VhcHAuY29tLyIsImxvZ2luIjoidGVzdCIsImV4cCI6MTY3NDYwNTIwM30.q5VhG_hslkwTZSeqpaFvaABTd2QpkC8KY8JoiHPdAws
 
 > {%
 client.test("Request executed successfully", function() {
-  client.assert(response.status === 200, "Response status is not 200");
+  client.assert(response.status === 404, "Response status is not 404");
 });
 %}

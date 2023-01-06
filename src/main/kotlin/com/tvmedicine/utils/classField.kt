@@ -8,26 +8,26 @@ interface classField {
     companion object{
         fun newPatientsList(dbData: users, patientObj: ResultRow): UsersSModel {
             return UsersSModel(
-                patientObj[users.id],
-                patientObj[users.surename],
-                patientObj[users.name],
-                patientObj[users.s_name],
-                patientObj[users.phone_number],
-                patientObj[users.insurance_policy_number],
-                patientObj[users.password],
-                patientObj[users.user_type]
+                patientObj[dbData.id],
+                patientObj[dbData.surename],
+                patientObj[dbData.name],
+                patientObj[dbData.s_name],
+                patientObj[dbData.phone_number],
+                patientObj[dbData.insurance_policy_number],
+                patientObj[dbData.password],
+                patientObj[dbData.user_type]
          )
         }
         fun newTreatmentList(dbData: treatment, treatmentObj: ResultRow): TreatmentSModel {
             return TreatmentSModel(
-                treatmentObj[treatment.id],
-                treatmentObj[treatment.chat_id],
-                treatmentObj[treatment.patient_id],
-                treatmentObj[treatment.doctor_id],
-                treatmentObj[treatment.start_date],
-                treatmentObj[treatment.symptoms_id],
-                treatmentObj[treatment.sound_server_link_id],
-                treatmentObj[treatment.conclusion_id]
+                treatmentObj[dbData.id],
+                treatmentObj[dbData.chat_id],
+                treatmentObj[dbData.patient_id],
+                treatmentObj[dbData.doctor_id],
+                treatmentObj[dbData.start_date],
+                treatmentObj[dbData.symptoms_id],
+                treatmentObj[dbData.sound_server_link_id],
+                treatmentObj[dbData.conclusion_id]
             )
         }
         fun newChatList(dbData: chats, chatObj: ResultRow): ChatSModel {

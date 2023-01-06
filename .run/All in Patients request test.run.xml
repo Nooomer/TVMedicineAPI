@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="true" name="All in Patients request test" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" editBeforeRun="true" environment="dev" path="$PROJECT_DIR$/src/test/kotlin/com/tvmedicine/Patients request test.http">
+    <method v="2" />
+  </configuration>
+</component>
