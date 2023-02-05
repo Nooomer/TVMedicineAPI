@@ -130,6 +130,7 @@ inline fun <reified T>MutableList<T>.toFront(treatmentStorage_new: MutableList<F
             for (i in this.indices) {
                 MessagesStorage_new.add(
                     FrontMessages(
+                        (this[i] as MessagesSModel).id,
                         (this[i] as MessagesSModel).from_id,
                         (this[i] as MessagesSModel).to_id,
                         (this[i] as MessagesSModel).message_text,
